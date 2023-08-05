@@ -11,7 +11,7 @@ class Home extends Controller
 	/**
 	 * loading the home page with login form
 	 *
-	 * @return void
+	 * @return view
 	 */
 	public function index(){
 		if(Auth::check()){
@@ -20,6 +20,10 @@ class Home extends Controller
 		return view('Login');
 	}
 
+    /**
+     * @param $request
+     * @return redirect()
+     */
 	public function handleLogin($request){
 		$request->validate([
 			'email' => 'required|email',
@@ -28,15 +32,18 @@ class Home extends Controller
 
 		$email = strip_tags(trim($request->email));
 		$password = strip_tags(trim($request->email));
-	
+
 		if(Auth::attempt(array('email'=>$email,'password'=>$password))){
+
 			return redirect('/dashboard');
 		}
 		return redirect('/');
 
 	}
 
-
+    /**
+     * @return view()
+     */
 	public function register(){
 		return view('Register');
 	}
@@ -48,7 +55,7 @@ class Home extends Controller
 	 * @return void
 	 */
 	public function handleRegistration($request){
-		
+
 
 		//validation
 		$request->validate([
@@ -57,34 +64,17 @@ class Home extends Controller
 			'password' => 'required|min:12|confirmed'
 		]);
 
-		//dd(strip_tags(Hash::make(strip_tags(trim($request->email)))));
 
-		//adding user to database
+        /**
+         * Adding new user to database
+         */
 		User::create([
 			'name' =>  strip_tags(trim($request->lname ? $request->fname . ' ' . $request->lname : $request->fname)),
 			'email' => strip_tags(trim($request->email)),
 			'password' => Hash::make(strip_tags(trim($request->email))),
 		]);
-		dd(Auth::attempt(array(
-			'email'=>strip_tags(trim($request->email)), 
-			'password'=>strip_tags(trim($request->password)) 
-		)));
-		// if(){
-		// 	return redirect('/dashboard');
-		// }
 
-		//return redirect('register')->withErrors('Error');
-		
+        return redirect('/login');
 	}
-
-
-	public function dashboard(){
-		if(Auth::check()){
-			return view('dashboard');
-		}
-		return redirect('/');
-	}
-
-	
 
 }

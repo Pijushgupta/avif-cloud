@@ -3,10 +3,10 @@
 @section('content')
 <div>
 <div class="container-full mx-auto">
-    <div class="flex md:flex-row justify-start items-center">
+    <div class="flex md:flex-row justify-between items-center">
         @include('layouts.dashboard.sidebar',array('page'=> isset($page) ? $page: ''))
-        <div class="sidebar w-5/6 h-screen">
-            
+        <div class="w-[calc(100%-250px)] ml-[250px] h-screen">
+          
             @if(isset($page) && $page === 'create')
                 @include('layouts.dashboard.create')
             @endif

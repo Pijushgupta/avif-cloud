@@ -1,4 +1,4 @@
-<nav class=" shadow">
+<nav class=" shadow sticky top-0 backdrop-blur">
 	<div class="container-full mx-auto px-2 ">
 		<div class="flex md:flex-row flex-col md:justify-between md:items-center ">
 			<div><a href="/">Logo</a></div>

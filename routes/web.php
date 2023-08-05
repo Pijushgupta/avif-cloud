@@ -16,41 +16,75 @@ use Illuminate\Support\Facades\Route;
 |
 */
 $home = new Home();
-$dashboard =  new Dashboard();
+
 Route::get('/', function () use ($home) {
-    
+
     return $home->index();
 })->name('loginFrom');
 
 Route::post('/',function(Request $request) use ($home){
- 
+
     return $home->handleLogin($request);
 })->name('login');
 
 Route::get('/register',function() use ($home){
-   
+
     return $home->register();
 })->name('registerForm');
 
 Route::post('/register',function(Request $request) use ($home){
-    
+
     return $home->handleRegistration($request);
 })->name('register');
 
 
-Route::get('/dashboard',function() use ($home){
-    return $home->dashboard();
-})->name('dashboard');
 
 /***
  * -----------------------------
  * Dashboard
+ * Protected Routes
  * -----------------------------
  */
-Route::get('/logout',function() use ($dashboard){
-return $dashboard->logout();
+Route::middleware('auth')->group(function(){
+
+    $dashboard =  new Dashboard();
+
+    Route::get('/dashboard', function() use ($dashboard){
+        return $dashboard->dashboard();
+    });
+    Route::get('/logout',function() use ($dashboard){
+        return $dashboard->logout();
+    });
+
+    Route::get('/dashboard/create',function() use($dashboard){
+        return $dashboard->create();
+    })->name('create');
+
+    Route::get('/dashboard/checkout/{id}',function($id) use($dashboard){
+
+        return $dashboard->checkout($id);
+
+    })->where('id', '[0-9]+');
+
+    Route::get('/dashboard/checkout/paymentstatus/', function(Request $request) {
+        if(!$request->query('payment_intent')) return;
+        return redirect()->route('final-msg',$request->query('payment_intent')) ;
+    });
+
+    Route::get('/dashboard/checkout/status/{slug}',function($slug) use($dashboard){
+
+        return $dashboard->PaymentStatus($slug);
+    })->name('final-msg');
+
+    Route::post('/dashboard/checkout/addaddress',function(Request $request) use($dashboard){
+        return $dashboard->addAddress($request);
+    });
 });
 
-Route::get('/dashboard/{name}',function(Request $request) use ($dashboard){
-    return $dashboard->dashboard($request->name);
-});
+
+
+
+
+
+
+

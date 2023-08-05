@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +10,10 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {   
-        
-        Schema::create('apis', function (Blueprint $table) {
-            $table->id('id');
-            $table->integer('user');
-            $table->string('apikey',64);
-            $table->string('sites');
-            $table->date('expiry');
-            $table->timestamps();
+    {
+        Schema::table('products', function (Blueprint $table) {
+            //
+            $table->text('product_token');
         });
     }
 
@@ -28,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('apis');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('product_token');
+            //
+        });
     }
 };
